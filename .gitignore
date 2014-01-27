@@ -1,9 +1,4 @@
-LeapJava.jar  
-Mango.class  
-MangoListener$1.class  
-MangoListener.class  
-MangoUser.class    
-compile.sh  
-libLeap.so  
-libLeapJava.so  
-run.sh
+*.jar
+*.class
+*.sh
+*.so
