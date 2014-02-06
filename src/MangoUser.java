@@ -15,36 +15,65 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.*;
+
 public class MangoUser 
 {
+    private File file;
+    Writer tofile = null;
+    ArrayList<String> commands = new ArrayList<String>();
     
-    public boolean gestureGo; //boolean value to determine whether or not a user wants to execute a command
-    private int tOne, tTwo; //time keepers to register whether or not to change the boolean value
-    
-    public MangoUser()
+    public MangoUser(File file)
     {
-        gestureGo = false;
-        tOne = 0;
-        tTwo = 0;
-    }
-    
-    public boolean execute() 
-    {
-        if ((tOne+100) >= tTwo)
+        BufferedWriter tofile = null;
+        BufferedReader br = null;
+        this.file = file;
+        if (!file.exists())
         {
-            gestureGo = true;
+            try 
+            {
+                tofile = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file), "utf-8"));
+                tofile.write("HAND-1:FINGERS-1:GESTURE-1"); //currently only one gesture 
+            } 
+            catch (IOException ex) 
+            {
+                 ex.printStackTrace();
+            } 
+            finally 
+            {
+                try {tofile.close();} catch (Exception ex) {}
+            }
         }
-        return true; //needs to be built out.
+        else 
+        {
+            try 
+            {
+                br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null)
+                {
+                    // process commands
+                }
+            }
+            catch (IOException e) 
+            {
+                e.printStackTrace();
+            }
+            finally 
+            {
+                try 
+                {
+                    if (br != null)
+                        br.close();
+                }
+                catch (IOException ex)
+                {
+                     ex.printStackTrace();
+                }
+            }
+        }
     }
-    
-    public void setGestureRequestTime(int a) 
-    {
-        tTwo = a;
-    }
-    
-    public void setFrameTime(int a)
-    {
-        tOne = a;
-    }
-    
 }

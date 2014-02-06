@@ -19,11 +19,13 @@ import java.lang.Math;
 import java.lang.Runtime;
 import com.leapmotion.leap.*;
 import com.leapmotion.leap.Gesture.State;
+import java.io.*;
 
 public class Mango 
 {
     public static void main(String[] args) 
     {
+        MangoUser user = new MangoUser(new File("commands.txt"));
         MangoListener listener = new MangoListener();
         Controller controller = new Controller();
         

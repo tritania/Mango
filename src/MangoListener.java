@@ -24,32 +24,6 @@ import com.leapmotion.leap.Gesture.State;
 
 public class MangoListener extends Listener {
     
-    private int listener, recorder; // makes sure that gestures arent repeated too quickly
-    private String command1 = "ls"; //at the moment only for debbuging
-    
-    public void swipeCommand(int time) {
-        if (recorder == 0) {
-            recorder = listener;
-            try {
-                Process proc = Runtime.getRuntime().exec(command1);
-                } 
-            catch (IOException e) {
-                e.printStackTrace();
-                                  }
-                              }
-        else if ((recorder + 35) >= listener)
-        {}
-        else {
-            recorder = listener;
-            try {
-                Process proc = Runtime.getRuntime().exec(command1);
-            } 
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            }
-    }
-    
     public void onInit(Controller controller) {
         System.out.println("Initialized");
     }
@@ -96,7 +70,6 @@ public class MangoListener extends Listener {
 
         GestureList gestures = frame.gestures();
         for (int i = 0; i < gestures.count(); i++) {
-            listener++;
             Gesture gesture = gestures.get(i);
 
             switch (gesture.type()) {
@@ -121,7 +94,6 @@ public class MangoListener extends Listener {
                     
                 case TYPE_SWIPE:
                     SwipeGesture swipe = new SwipeGesture(gesture);
-                    swipeCommand(listener);
                     break;
                     
                 case TYPE_SCREEN_TAP:
