@@ -26,9 +26,11 @@ import java.util.Date;
 
 public class MangoListener extends Listener {
     
-    private boolean command;
+    private boolean command = false;
+    private boolean alert = false;
     private int commandcheck= 0;
     private long datetime;
+    private long splashtime;
     
     public void onInit(Controller controller) {
         System.out.println("Initialized");
@@ -53,6 +55,16 @@ public class MangoListener extends Listener {
     public void onFrame(Controller controller) {
         Frame frame = controller.frame();
 
+        if(datetime < new Date().getTime() && alert == true)
+        {
+            alert = false;
+            try 
+            {
+            MangoSplash.hideSplashScreen();
+            }
+            catch (Exception ex) {}
+        }
+
         if(command == true && datetime > new Date().getTime())
         {
             MangoGestureListener.recognize(frame, controller);
@@ -60,25 +72,27 @@ public class MangoListener extends Listener {
         
         if(datetime < new Date().getTime())
         {
-            try {
-            MangoSplash.hideSplashScreen();
-            }
-            catch (Exception ex) {}
             command = false;
-            commandcheck =0; //dispose of window here
+            commandcheck =0; 
         }
 
         if (!frame.hands().isEmpty() && (frame.hands().count() == 1) && (frame.fingers().count() == 0) && command == false) 
         {
            System.out.println("Ready!");
            commandcheck++;
-           if (commandcheck == 30)
+           if (commandcheck == 60)
            {
                 command = true;
+                alert = true;
                 MangoSplash.showSplashScreen();
+                datetime = new Date().getTime() + 3000;
            } 
            datetime = new Date().getTime() + 10000;
         }   
+        else if(command == false)
+        {
+            commandcheck = 0;
+        }
         
     }
 }
