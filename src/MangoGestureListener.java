@@ -22,31 +22,10 @@ import com.leapmotion.leap.*;
 import com.leapmotion.leap.Gesture.State;
 
 
-public class MangoGestureListener extends Listener {
+public class MangoGestureListener {
     
-    public static void recognize(Frame frame, Controller controller) {
-
-        if (!frame.hands().isEmpty()) {
-            Hand hand = frame.hands().get(0);
-
-            FingerList fingers = hand.fingers();
-            if (!fingers.isEmpty()) {
-                Vector avgPos = Vector.zero();
-                for (Finger finger : fingers) {
-                    avgPos = avgPos.plus(finger.tipPosition());
-                }
-                avgPos = avgPos.divide(fingers.count());
-                
-            }
-
-           
-
-            Vector normal = hand.palmNormal();
-            Vector direction = hand.direction();
-
-            
-        }
-
+    public static void recognize(Frame frame, Controller controller)
+    {
         GestureList gestures = frame.gestures();
         for (int i = 0; i < gestures.count(); i++) {
             Gesture gesture = gestures.get(i);
@@ -55,36 +34,51 @@ public class MangoGestureListener extends Listener {
                 case TYPE_CIRCLE:
                     CircleGesture circle = new CircleGesture(gesture);
 
+                    // Calculate clock direction using the angle between circle normal and pointable
                     String clockwiseness;
                     if (circle.pointable().direction().angleTo(circle.normal()) <= Math.PI/4) {
+                        // Clockwise if angle is less than 90 degrees
                         clockwiseness = "clockwise";
                     } else {
                         clockwiseness = "counterclockwise";
                     }
 
+                    // Calculate angle swept since last frame
                     double sweptAngle = 0;
                     if (circle.state() != State.STATE_START) {
                         CircleGesture previousUpdate = new CircleGesture(controller.frame(1).gesture(circle.id()));
                         sweptAngle = (circle.progress() - previousUpdate.progress()) * 2 * Math.PI;
                     }
 
-                    
+                    System.out.println("Circle id: " + circle.id()
+                               + ", " + circle.state()
+                               + ", progress: " + circle.progress()
+                               + ", radius: " + circle.radius()
+                               + ", angle: " + Math.toDegrees(sweptAngle)
+                               + ", " + clockwiseness);
                     break;
-                    
                 case TYPE_SWIPE:
                     SwipeGesture swipe = new SwipeGesture(gesture);
+                    System.out.println("Swipe id: " + swipe.id()
+                               + ", " + swipe.state()
+                               + ", position: " + swipe.position()
+                               + ", direction: " + swipe.direction()
+                               + ", speed: " + swipe.speed());
                     break;
-                    
                 case TYPE_SCREEN_TAP:
                     ScreenTapGesture screenTap = new ScreenTapGesture(gesture);
-                   
+                    System.out.println("Screen Tap id: " + screenTap.id()
+                               + ", " + screenTap.state()
+                               + ", position: " + screenTap.position()
+                               + ", direction: " + screenTap.direction());
                     break;
-                    
                 case TYPE_KEY_TAP:
                     KeyTapGesture keyTap = new KeyTapGesture(gesture);
-                   
+                    System.out.println("Key Tap id: " + keyTap.id()
+                               + ", " + keyTap.state()
+                               + ", position: " + keyTap.position()
+                               + ", direction: " + keyTap.direction());
                     break;
-                    
                 default:
                     System.out.println("Unknown gesture type.");
                     break;
@@ -93,5 +87,7 @@ public class MangoGestureListener extends Listener {
 
         if (!frame.hands().isEmpty() || !gestures.isEmpty()) {
         }
-    }
+        
+        }
 }
+

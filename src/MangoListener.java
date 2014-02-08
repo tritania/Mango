@@ -20,9 +20,11 @@ import java.lang.Math;
 import java.lang.Runtime;
 import com.leapmotion.leap.*;
 import com.leapmotion.leap.Gesture.State;
-
+import java.util.Date;
 
 public class MangoListener extends Listener {
+    
+    long datetime;
     
     public void onInit(Controller controller) {
         System.out.println("Initialized");
@@ -47,9 +49,22 @@ public class MangoListener extends Listener {
     public void onFrame(Controller controller) {
         Frame frame = controller.frame();
 
-        if (!frame.hands().isEmpty()) 
+        if(Mango.command == true && datetime > new Date().getTime())
         {
-           MangoGestureListener.recognize(frame, controller);
+            MangoGestureListener.recognize(frame, controller);
         }
+        
+        if(datetime < new Date().getTime())
+        {
+            Mango.command = false;
+        }
+
+        if (!frame.hands().isEmpty() && (frame.hands().count() == 1) && (frame.fingers().count() == 0) && Mango.command == false) 
+        {
+           System.out.println("Ready!");
+           Mango.command = true;
+           datetime = new Date().getTime() + 10000;
+        }   
+        
     }
 }

@@ -23,6 +23,8 @@ import java.io.*;
 
 public class Mango 
 {
+    public static boolean command = false;
+    
     public static void main(String[] args) 
     {
         MangoUser user = new MangoUser(new File("commands.txt"));
