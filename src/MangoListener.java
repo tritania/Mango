@@ -60,8 +60,12 @@ public class MangoListener extends Listener {
         
         if(datetime < new Date().getTime())
         {
+            try {
+            MangoSplash.hideSplashScreen();
+            }
+            catch (Exception ex) {}
             command = false;
-            commandcheck =0;
+            commandcheck =0; //dispose of window here
         }
 
         if (!frame.hands().isEmpty() && (frame.hands().count() == 1) && (frame.fingers().count() == 0) && command == false) 
@@ -69,7 +73,10 @@ public class MangoListener extends Listener {
            System.out.println("Ready!");
            commandcheck++;
            if (commandcheck == 30)
+           {
                 command = true;
+                MangoSplash.showSplashScreen();
+           } 
            datetime = new Date().getTime() + 10000;
         }   
         
