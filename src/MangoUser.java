@@ -36,7 +36,7 @@ public class MangoUser
             {
                 tofile = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(file), "utf-8"));
-                tofile.write("HAND-1:FINGERS-1:GESTURE-1"); //currently only one gesture 
+                tofile.write("HAND-1:FINGERS-1:GESTURE-1:'ls';" + "\n" +"GESTURE-3:'pwd';"); //currently only one gesture 
             } 
             catch (IOException ex) 
             {
@@ -55,7 +55,7 @@ public class MangoUser
                 String line;
                 while ((line = br.readLine()) != null)
                 {
-                    // process commands
+                    commands.add(line);
                 }
             }
             catch (IOException e) 

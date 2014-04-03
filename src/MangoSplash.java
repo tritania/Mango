@@ -40,19 +40,16 @@ public class MangoSplash {
     }
 
     public static void showSplashScreen() {
+        System.out.println("Splash!");
         dialog = new JDialog((Frame) null);
         dialog.setModal(false);
         dialog.setUndecorated(true);
-        dialog.getRootPane ().setOpaque (false);
+        dialog.getRootPane().setOpaque (false);
         dialog.getContentPane ().setBackground (new Color (0, 0, 0, 0));
         dialog.setBackground (new Color (0, 0, 0, 0));
-        JLabel background = new JLabel(new ImageIcon("Gesture.png"));
+        JLabel background = new JLabel(new ImageIcon("bin/Gesture.png"));
         background.setLayout(new BorderLayout());
         dialog.add(background);
-        JLabel text = new JLabel("Gesture system ready!");
-        text.setForeground(Color.WHITE);
-        text.setBorder(BorderFactory.createEmptyBorder(100, 50, 100, 50));
-        background.add(text);
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);

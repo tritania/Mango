@@ -24,6 +24,8 @@ import com.leapmotion.leap.Gesture.State;
 
 public class MangoGestureListener {
     
+    private static int type;
+    
     public static void recognize(Frame frame, Controller controller)
     {
         GestureList gestures = frame.gestures();
@@ -39,8 +41,10 @@ public class MangoGestureListener {
                     if (circle.pointable().direction().angleTo(circle.normal()) <= Math.PI/4) {
                         // Clockwise if angle is less than 90 degrees
                         clockwiseness = "clockwise";
+                        type = 1;
                     } else {
                         clockwiseness = "counterclockwise";
+                        type = 2;
                     }
 
                     // Calculate angle swept since last frame
@@ -50,37 +54,24 @@ public class MangoGestureListener {
                         sweptAngle = (circle.progress() - previousUpdate.progress()) * 2 * Math.PI;
                     }
 
-                    System.out.println("Circle id: " + circle.id()
-                               + ", " + circle.state()
-                               + ", progress: " + circle.progress()
-                               + ", radius: " + circle.radius()
-                               + ", angle: " + Math.toDegrees(sweptAngle)
-                               + ", " + clockwiseness);
+
                     break;
                 case TYPE_SWIPE:
+                    type = 3;
                     SwipeGesture swipe = new SwipeGesture(gesture);
-                    System.out.println("Swipe id: " + swipe.id()
-                               + ", " + swipe.state()
-                               + ", position: " + swipe.position()
-                               + ", direction: " + swipe.direction()
-                               + ", speed: " + swipe.speed());
+                   
                     break;
                 case TYPE_SCREEN_TAP:
+                    type = 4;
                     ScreenTapGesture screenTap = new ScreenTapGesture(gesture);
-                    System.out.println("Screen Tap id: " + screenTap.id()
-                               + ", " + screenTap.state()
-                               + ", position: " + screenTap.position()
-                               + ", direction: " + screenTap.direction());
+                   
                     break;
                 case TYPE_KEY_TAP:
+                    type = 5;
                     KeyTapGesture keyTap = new KeyTapGesture(gesture);
-                    System.out.println("Key Tap id: " + keyTap.id()
-                               + ", " + keyTap.state()
-                               + ", position: " + keyTap.position()
-                               + ", direction: " + keyTap.direction());
+                
                     break;
                 default:
-                    System.out.println("Unknown gesture type.");
                     break;
             }
         }
