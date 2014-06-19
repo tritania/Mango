@@ -34,6 +34,7 @@ class MangoListener : public Listener {
 
   private:
     bool onPreGesture;
+    int preGestureCounter;
 };
 
 const std::string fingerNames[] = {"Thumb", "Index", "Middle", "Ring", "Pinky"};
@@ -53,7 +54,6 @@ void MangoListener::onConnect(const Controller& controller) {
 }
 
 void MangoListener::onDisconnect(const Controller& controller) {
-  // Note: not dispatched when running in a debugger.
   std::cout << "Disconnected" << std::endl;
 }
 
@@ -62,18 +62,25 @@ void MangoListener::onExit(const Controller& controller) {
 }
 
 void MangoListener::onFrame(const Controller& controller) {
-  // Get the most recent frame and report some basic information
   const Frame frame = controller.frame();
-  HandList hands = frame.hands();
-  for (HandList::const_iterator hl = hands.begin(); hl != hands.end(); ++hl) {
-    // Get the first hand
-    const Hand hand = *hl;
-    std::string handType = hand.isLeft() ? "Left hand" : "Right hand";
-    std::cout << std::string(2, ' ') << handType << ", id: " << hand.id()
-              << ", palm position: " << hand.palmPosition() << std::endl;
-  }
 
-  // Get gestures
+    HandList hands = frame.hands();
+    for (HandList::const_iterator hl = hands.begin(); hl != hands.end(); ++hl) {
+        const Hand hand = *hl;
+
+        int extendedFingers = 0;
+        for (int i = 0; i < hand.fingers().count(); i++)
+        {
+            Finger finger = hand.fingers()[i];
+            if(finger.isExtended()) extendedFingers++;
+        }
+
+        if (!frame.hands().isEmpty() && frame.hands().count() == 1 && extendedFingers == 0)
+        {
+          std::cout << "Gesture Ready." << std::endl;
+        }
+    }
+
   const GestureList gestures = frame.gestures();
   for (int g = 0; g < gestures.count(); ++g) {
     Gesture gesture = gestures[g];
@@ -111,18 +118,14 @@ void MangoListener::onFrame(const Controller& controller) {
         break;
     }
   }
-
-  if (!frame.hands().isEmpty() || !gestures.isEmpty()) {
-    std::cout << std::endl;
-  }
 }
 
 void MangoListener::onFocusGained(const Controller& controller) {
-  std::cout << "Focus Gained" << std::endl;
+    std::cout << "Focus Gained" << std::endl;
 }
 
 void MangoListener::onFocusLost(const Controller& controller) {
-  std::cout << "Focus Lost" << std::endl;
+    std::cout << "Focus Lost" << std::endl;
 }
 
 void MangoListener::onDeviceChange(const Controller& controller) {
