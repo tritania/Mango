@@ -77,47 +77,58 @@ void MangoListener::onFrame(const Controller& controller) {
 
         if (!frame.hands().isEmpty() && frame.hands().count() == 1 && extendedFingers == 0)
         {
-          std::cout << "Gesture Ready." << std::endl;
+            std::cout << "Gesture Counter begins." << std::endl;
+            preGestureCounter++;
+            if (preGestureCounter > 60)
+            {
+                preGestureCounter = 0;
+                const GestureList gestures = frame.gestures();
+                for (int g = 0; g < gestures.count(); ++g) {
+                    Gesture gesture = gestures[g];
+                    switch (gesture.type()) {
+                        case Gesture::TYPE_CIRCLE:
+                        {
+                            CircleGesture circle = gesture;
+                            std::string clockwiseness;
+
+                            if (circle.pointable().direction().angleTo(circle.normal()) <= PI/4) {
+                              clockwiseness = "clockwise";
+                            } else {
+                              clockwiseness = "counterclockwise";
+                            }
+                            break;
+                        }
+                        case Gesture::TYPE_SWIPE:
+                        {
+                            SwipeGesture swipe = gesture;
+                            break;
+                        }
+                        case Gesture::TYPE_KEY_TAP:
+                        {
+                            KeyTapGesture tap = gesture;
+                            break;
+                        }
+                        case Gesture::TYPE_SCREEN_TAP:
+                        {
+                            ScreenTapGesture screentap = gesture;
+                            break;
+                        }
+                        default:
+                        {
+                        std::cout << std::string(2, ' ')  << "Unknown gesture type." << std::endl;
+                        break;
+                        }
+                    }
+                }
+            }
         }
-    }
-
-  const GestureList gestures = frame.gestures();
-  for (int g = 0; g < gestures.count(); ++g) {
-    Gesture gesture = gestures[g];
-
-    switch (gesture.type()) {
-      case Gesture::TYPE_CIRCLE:
-      {
-        CircleGesture circle = gesture;
-        std::string clockwiseness;
-
-        if (circle.pointable().direction().angleTo(circle.normal()) <= PI/4) {
-          clockwiseness = "clockwise";
-        } else {
-          clockwiseness = "counterclockwise";
+        else
+        {
+            if (preGestureCounter > 0)
+                preGestureCounter--;
         }
-        break;
-      }
-      case Gesture::TYPE_SWIPE:
-      {
-        SwipeGesture swipe = gesture;
-        break;
-      }
-      case Gesture::TYPE_KEY_TAP:
-      {
-        KeyTapGesture tap = gesture;
-        break;
-      }
-      case Gesture::TYPE_SCREEN_TAP:
-      {
-        ScreenTapGesture screentap = gesture;
-        break;
-      }
-      default:
-        std::cout << std::string(2, ' ')  << "Unknown gesture type." << std::endl;
-        break;
+        std::cout << preGestureCounter << std::endl;
     }
-  }
 }
 
 void MangoListener::onFocusGained(const Controller& controller) {
