@@ -29,9 +29,17 @@ MangoCommands::MangoCommands()
     if (file.is_open())
     {
         std::string str;
+        bool typeCommand = false;
+        std::string gesture = str;
+        std::string command = str;
         while (getline(file, str))
         {
-
+            if (!typeCommand) {
+                gesture = str;
+            } else {
+                command = str;
+                commands[gesture] = command;
+            }
         }
     }
     else
@@ -39,6 +47,10 @@ MangoCommands::MangoCommands()
         file.open("~/.Mango/config",std::fstream::out);
         std::cout << "Please add commands to the config file" << std::endl;
     }
+}
+
+std::string MangoCommands::getCommand(std::string gesture) {
+    return "NOT_FOUND";
 }
 
 void MangoCommands::reloadCommands() {

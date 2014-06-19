@@ -22,6 +22,7 @@
 
 class MangoCommands {
     public:
+        std::string getCommand(std::string);
         void reloadCommands();
         MangoCommands();
     private:
