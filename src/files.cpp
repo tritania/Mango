@@ -20,11 +20,27 @@
 #include <stdio.h>
 #include <string>
 #include <stdlib.h>
+#include <map>
 
-void loadCommands() {
+MangoCommands::MangoCommands()
+{
+    std::cout << "Commands are being loaded!" << std::endl;
+        std::ifstream file("~/.Mango/config");
+    if (file.is_open())
+    {
+        std::string str;
+        while (getline(file, str))
+        {
 
+        }
+    }
+    else
+    {
+        file.open("~/.Mango/config",std::fstream::out);
+        std::cout << "Please add commands to the config file" << std::endl;
+    }
 }
 
-void reloadCommands() {
+void MangoCommands::reloadCommands() {
 
 }

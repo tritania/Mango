@@ -126,7 +126,7 @@ void MangoListener::onFrame(const Controller& controller) {
 int main()
 {
   MangoListener listener;
-  loadCommands();
+  MangoCommands commands;
 
   Controller controller;
   controller.addListener(listener);

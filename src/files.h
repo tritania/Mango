@@ -14,7 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <string>
+#ifndef FILES_H
+#define FILES_H
 
-void loadCommands();
-void reloadCommands();
+#include <iostream>
+#include <map>
+
+class MangoCommands {
+    public:
+        void reloadCommands();
+        MangoCommands();
+    private:
+        std::map<std::string, std::string> commands;
+};
+
+#endif
