@@ -26,11 +26,6 @@ class MangoListener : public Listener {
     virtual void onDisconnect(const Controller&);
     virtual void onExit(const Controller&);
     virtual void onFrame(const Controller&);
-    virtual void onFocusGained(const Controller&);
-    virtual void onFocusLost(const Controller&);
-    virtual void onDeviceChange(const Controller&);
-    virtual void onServiceConnect(const Controller&);
-    virtual void onServiceDisconnect(const Controller&);
 
   private:
     bool onPreGesture;
@@ -129,32 +124,6 @@ void MangoListener::onFrame(const Controller& controller) {
         }
         std::cout << preGestureCounter << std::endl;
     }
-}
-
-void MangoListener::onFocusGained(const Controller& controller) {
-    std::cout << "Focus Gained" << std::endl;
-}
-
-void MangoListener::onFocusLost(const Controller& controller) {
-    std::cout << "Focus Lost" << std::endl;
-}
-
-void MangoListener::onDeviceChange(const Controller& controller) {
-  std::cout << "Device Changed" << std::endl;
-  const DeviceList devices = controller.devices();
-
-  for (int i = 0; i < devices.count(); ++i) {
-    std::cout << "id: " << devices[i].toString() << std::endl;
-    std::cout << "  isStreaming: " << (devices[i].isStreaming() ? "true" : "false") << std::endl;
-  }
-}
-
-void MangoListener::onServiceConnect(const Controller& controller) {
-  std::cout << "Service Connected" << std::endl;
-}
-
-void MangoListener::onServiceDisconnect(const Controller& controller) {
-  std::cout << "Service Disconnected" << std::endl;
 }
 
 int main()
