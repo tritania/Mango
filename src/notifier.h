@@ -1,21 +1,20 @@
-#ifndef SHAPEDCLOCK_H
-#define SHAPEDCLOCK_H
+#ifndef NOTIFIER_H
+#define NOTIFIER_H
 
 #include <QWidget>
 
-class ShapedClock : public QWidget
+class Notifier : public QWidget
 {
     Q_OBJECT
 
 public:
-    ShapedClock(QWidget *parent = 0);
+    Notifier(QWidget *parent = 0);
     QSize sizeHint() const;
 
 protected:
+    void paintEvent(QPaintEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
 
 private:
     QPoint dragPosition;

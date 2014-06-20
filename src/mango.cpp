@@ -19,7 +19,7 @@
 #include <QApplication>
 #include "Leap.h"
 #include "files.h"
-#include "shapedclock.h"
+#include "notifier.h"
 using namespace Leap;
 
 class MangoListener : public Listener {
@@ -31,8 +31,10 @@ class MangoListener : public Listener {
     virtual void onFrame(const Controller&);
 
   private:
-    bool onPreGesture = false;
-    int preGestureCounter;
+    bool onGesture = false;
+    int preGestureCounter = 0;
+    int frameCount = 0;
+    Notifier note;
 };
 
 void MangoListener::onInit(const Controller& controller) {
@@ -57,10 +59,10 @@ void MangoListener::onExit(const Controller& controller) {
 
 void MangoListener::onFrame(const Controller& controller) {
   const Frame frame = controller.frame();
-
     HandList hands = frame.hands();
     for (HandList::const_iterator hl = hands.begin(); hl != hands.end(); ++hl) {
         const Hand hand = *hl;
+
 
         int extendedFingers = 0;
         for (int i = 0; i < hand.fingers().count(); i++)
@@ -69,71 +71,73 @@ void MangoListener::onFrame(const Controller& controller) {
             if(finger.isExtended()) extendedFingers++;
         }
 
-        if (!frame.hands().isEmpty() && frame.hands().count() == 1 && extendedFingers == 0)
+        if (!onGesture && !frame.hands().isEmpty() && frame.hands().count() == 1 && extendedFingers == 0)
         {
             std::cout << "Gesture Counter begins." << std::endl;
             preGestureCounter++;
-            if (preGestureCounter > 60)
+            std::cout << preGestureCounter << std::endl;
+            if (preGestureCounter > 60 && frameCount == 0)
             {
-                if (onPreGesture == false)
-                {
-                    ShapedClock clock;
-                    clock.show();
-                    while(1)
-                    {
-
-                    }
-                }
-                onPreGesture = true;
-
+                onGesture = true;
                 preGestureCounter = 0;
-                const GestureList gestures = frame.gestures();
-                for (int g = 0; g < gestures.count(); ++g) {
-                    Gesture gesture = gestures[g];
-                    switch (gesture.type()) {
-                        case Gesture::TYPE_CIRCLE:
-                        {
-                            CircleGesture circle = gesture;
-                            std::string clockwiseness; //probably simplfy to a bool
+                frameCount++;
+                note.show();
+            }
+        }
+        else if (preGestureCounter > 0)
+        {
+            preGestureCounter--;
+            std::cout << preGestureCounter << std::endl;
+        }
+    }
 
-                            if (circle.pointable().direction().angleTo(circle.normal()) <= PI/4) {
-                              clockwiseness = "clockwise";
-                            } else {
-                              clockwiseness = "counterclockwise";
-                            }
-                            break;
+        if (onGesture && frameCount < 180) {
+            frameCount++;
+            const GestureList gestures = frame.gestures();
+            for (int g = 0; g < gestures.count(); ++g) {
+                Gesture gesture = gestures[g];
+                switch (gesture.type()) {
+                    case Gesture::TYPE_CIRCLE:
+                    {
+                        CircleGesture circle = gesture;
+                        std::string clockwiseness; //probably simplfy to a bool
+
+                        if (circle.pointable().direction().angleTo(circle.normal()) <= PI/4) {
+                          clockwiseness = "clockwise";
+                        } else {
+                          clockwiseness = "counterclockwise";
                         }
-                        case Gesture::TYPE_SWIPE:
-                        {
-                            SwipeGesture swipe = gesture;
-                            break;
-                        }
-                        case Gesture::TYPE_KEY_TAP:
-                        {
-                            KeyTapGesture tap = gesture;
-                            break;
-                        }
-                        case Gesture::TYPE_SCREEN_TAP:
-                        {
-                            ScreenTapGesture screentap = gesture;
-                            break;
-                        }
-                        default:
-                        {
+                        break;
+                    }
+                    case Gesture::TYPE_SWIPE:
+                    {
+                        SwipeGesture swipe = gesture;
+                        break;
+                    }
+                    case Gesture::TYPE_KEY_TAP:
+                    {
+                        KeyTapGesture tap = gesture;
+                        break;
+                    }
+                    case Gesture::TYPE_SCREEN_TAP:
+                    {
+                        ScreenTapGesture screentap = gesture;
+                        break;
+                    }
+                    default:
+                    {
                         std::cout << std::string(2, ' ')  << "Unknown gesture type." << std::endl;
                         break;
-                        }
                     }
                 }
             }
         }
-        else
+        else if (onGesture == true && frameCount > 180)
         {
-            if (preGestureCounter > 0)
-                preGestureCounter--;
+            note.hide();
+            onGesture = false;
+            frameCount = 0;
         }
-        std::cout << preGestureCounter << std::endl;
-    }
 }
 
 int main(int argc, char *argv[])
@@ -147,8 +151,10 @@ int main(int argc, char *argv[])
   controller.addListener(listener);
 
   std::cout << "Mango started, press enter to quit..." << std::endl;
+  app.exec();
   std::cin.get();
 
   controller.removeListener(listener);
-  return app.exec();
+
+  return 0;
 }

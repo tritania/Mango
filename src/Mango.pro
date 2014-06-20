@@ -10,5 +10,5 @@ LIBS += -L../lib/x64 -lLeap
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 # Input
-HEADERS += files.h shapedclock.h
-SOURCES += files.cpp mango.cpp shapedclock.cpp
+HEADERS += files.h notifier.h
+SOURCES += files.cpp mango.cpp notifier.cpp
