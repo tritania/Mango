@@ -31,9 +31,10 @@ class MangoListener : public Listener {
     virtual void onFrame(const Controller&);
 
   private:
-    bool onGesture = false;
-    int preGestureCounter = 0;
-    int frameCount = 0;
+    bool onGesture;
+    int preGestureCounter;
+    int frameCount;
+    int gestureCount[];
     Notifier note;
 };
 
@@ -73,7 +74,6 @@ void MangoListener::onFrame(const Controller& controller) {
 
         if (!onGesture && !frame.hands().isEmpty() && frame.hands().count() == 1 && extendedFingers == 0)
         {
-            std::cout << "Gesture Counter begins." << std::endl;
             preGestureCounter++;
             std::cout << preGestureCounter << std::endl;
             if (preGestureCounter > 60 && frameCount == 0)
@@ -87,11 +87,10 @@ void MangoListener::onFrame(const Controller& controller) {
         else if (preGestureCounter > 0)
         {
             preGestureCounter--;
-            std::cout << preGestureCounter << std::endl;
         }
     }
 
-        if (onGesture && frameCount < 180) {
+        if (onGesture && frameCount < 300) {
             frameCount++;
             const GestureList gestures = frame.gestures();
             for (int g = 0; g < gestures.count(); ++g) {
@@ -102,26 +101,34 @@ void MangoListener::onFrame(const Controller& controller) {
                         CircleGesture circle = gesture;
                         std::string clockwiseness; //probably simplfy to a bool
 
-                        if (circle.pointable().direction().angleTo(circle.normal()) <= PI/4) {
+                        if (circle.pointable().direction().angleTo(circle.normal()) <= PI/4)
+                        {
                           clockwiseness = "clockwise";
-                        } else {
+                          std::cout << "CIRCLE CLOCKWISE" << std::endl;
+                        }
+                        else
+                        {
                           clockwiseness = "counterclockwise";
+                          std::cout << "CIRCLE COUNTERCLOCKWISE" << std::endl;
                         }
                         break;
                     }
                     case Gesture::TYPE_SWIPE:
                     {
                         SwipeGesture swipe = gesture;
+                        std::cout << "SWIPE" << std::endl;
                         break;
                     }
                     case Gesture::TYPE_KEY_TAP:
                     {
                         KeyTapGesture tap = gesture;
+                        std::cout << "KEY TAPE" << std::endl;
                         break;
                     }
                     case Gesture::TYPE_SCREEN_TAP:
                     {
                         ScreenTapGesture screentap = gesture;
+                        std::cout << "SCREEN TAP" << std::endl;
                         break;
                     }
                     default:
@@ -130,9 +137,11 @@ void MangoListener::onFrame(const Controller& controller) {
                         break;
                     }
                 }
+                float seconds = gesture.durationSeconds();
+                std::cout << seconds << std::endl;
             }
         }
-        else if (onGesture == true && frameCount > 180)
+        else if (onGesture == true && frameCount > 300)
         {
             note.hide();
             onGesture = false;

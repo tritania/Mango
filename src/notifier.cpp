@@ -2,13 +2,11 @@
 #include "notifier.h"
 
 Notifier::Notifier(QWidget *parent)
-    : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint)
+    : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::ToolTip)
 {
     setAttribute(Qt::WA_TranslucentBackground);
     setContextMenuPolicy(Qt::ActionsContextMenu);
-    setToolTip(tr("Drag the clock with the left mouse button.\n"
-                  "Use the right mouse button to open a context menu."));
-    setWindowTitle(tr("Shaped Analog Clock"));
+    setWindowTitle(tr("Mango"));
 }
 
 void Notifier::paintEvent(QPaintEvent *)
