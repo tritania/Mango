@@ -50,7 +50,11 @@ MangoCommands::MangoCommands()
 }
 
 std::string MangoCommands::getCommand(std::string gesture) {
-    return "NOT_FOUND";
+    if (commands.find(gesture) != commands.end()) {
+        return commands[gesture];
+    } else {
+        return "NOT_FOUND";
+    }
 }
 
 void MangoCommands::reloadCommands() {

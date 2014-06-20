@@ -16,8 +16,10 @@
  */
 
 #include <iostream>
+#include <QApplication>
 #include "Leap.h"
 #include "files.h"
+#include "shapedclock.h"
 using namespace Leap;
 
 class MangoListener : public Listener {
@@ -29,7 +31,7 @@ class MangoListener : public Listener {
     virtual void onFrame(const Controller&);
 
   private:
-    bool onPreGesture;
+    bool onPreGesture = false;
     int preGestureCounter;
 };
 
@@ -73,6 +75,17 @@ void MangoListener::onFrame(const Controller& controller) {
             preGestureCounter++;
             if (preGestureCounter > 60)
             {
+                if (onPreGesture == false)
+                {
+                    ShapedClock clock;
+                    clock.show();
+                    while(1)
+                    {
+
+                    }
+                }
+                onPreGesture = true;
+
                 preGestureCounter = 0;
                 const GestureList gestures = frame.gestures();
                 for (int g = 0; g < gestures.count(); ++g) {
@@ -81,7 +94,7 @@ void MangoListener::onFrame(const Controller& controller) {
                         case Gesture::TYPE_CIRCLE:
                         {
                             CircleGesture circle = gesture;
-                            std::string clockwiseness; //probably simplfy to a byte
+                            std::string clockwiseness; //probably simplfy to a bool
 
                             if (circle.pointable().direction().angleTo(circle.normal()) <= PI/4) {
                               clockwiseness = "clockwise";
@@ -123,8 +136,10 @@ void MangoListener::onFrame(const Controller& controller) {
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+  QApplication app(argc, argv);
+
   MangoListener listener;
   MangoCommands commands;
 
@@ -135,6 +150,5 @@ int main()
   std::cin.get();
 
   controller.removeListener(listener);
-
-  return 0;
+  return app.exec();
 }

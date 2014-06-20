@@ -5,3 +5,5 @@
 lib
 include
 Mango
+*.o
+Makefile
