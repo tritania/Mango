@@ -1,10 +1,10 @@
 #include <QtWidgets>
-
 #include "notifier.h"
 
 Notifier::Notifier(QWidget *parent)
     : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
     setContextMenuPolicy(Qt::ActionsContextMenu);
     setToolTip(tr("Drag the clock with the left mouse button.\n"
                   "Use the right mouse button to open a context menu."));
@@ -13,10 +13,8 @@ Notifier::Notifier(QWidget *parent)
 
 void Notifier::paintEvent(QPaintEvent *)
 {
-    QColor backgroundColor = palette().light().color();
-    backgroundColor.setAlpha(200);
-    QPainter customPainter(this);
-    customPainter.fillRect(rect(),backgroundColor);
+    QPainter painter(this);
+    painter.drawImage(QRectF(0, 0, 400, 400), QImage(":/images/hand.png"));
 }
 
 void Notifier::mousePressEvent(QMouseEvent *event)
@@ -38,5 +36,5 @@ void Notifier::mouseMoveEvent(QMouseEvent *event)
 
 QSize Notifier::sizeHint() const
 {
-    return QSize(100, 100);
+    return QSize(400, 400);
 }

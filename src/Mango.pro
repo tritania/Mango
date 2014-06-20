@@ -8,6 +8,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../include
 LIBS += -L../lib/x64 -lLeap
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+RESOURCES     = resources.qrc
 
 # Input
 HEADERS += files.h notifier.h
