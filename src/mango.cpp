@@ -138,6 +138,10 @@ void MangoListener::onFrame(const Controller& controller) {
             onGesture = false;
             frameCount = 0;
         }
+        else if (onGesture)
+        {
+            frameCount++;
+        }
 }
 
 int main(int argc, char *argv[])
