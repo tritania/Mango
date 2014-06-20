@@ -31,10 +31,12 @@ class MangoListener : public Listener {
     virtual void onFrame(const Controller&);
 
   private:
-    bool onGesture;
-    int preGestureCounter;
-    int frameCount;
+    bool onGesture = false;
+    int preGestureCounter = 0;
+    int frameCount = 0;
     int gestureCount[];
+    static const int MAX_FRAMECOUNT = 240;
+    static const int MAX_PREGESTURE = 60;
     Notifier note;
 };
 
@@ -76,7 +78,7 @@ void MangoListener::onFrame(const Controller& controller) {
         {
             preGestureCounter++;
             std::cout << preGestureCounter << std::endl;
-            if (preGestureCounter > 60 && frameCount == 0)
+            if (preGestureCounter > MAX_PREGESTURE && frameCount == 0)
             {
                 onGesture = true;
                 preGestureCounter = 0;
@@ -90,7 +92,7 @@ void MangoListener::onFrame(const Controller& controller) {
         }
     }
 
-        if (onGesture && frameCount < 300) {
+        if (onGesture && frameCount < MAX_FRAMECOUNT) {
             frameCount++;
             const GestureList gestures = frame.gestures();
             for (int g = 0; g < gestures.count(); ++g) {
@@ -141,7 +143,7 @@ void MangoListener::onFrame(const Controller& controller) {
                 std::cout << seconds << std::endl;
             }
         }
-        else if (onGesture == true && frameCount > 300)
+        else if (onGesture == true && frameCount > MAX_FRAMECOUNT)
         {
             note.hide();
             onGesture = false;
