@@ -9,3 +9,4 @@ Mango
 Makefile
 moc*
 qrc_resources.cpp
+*.conf

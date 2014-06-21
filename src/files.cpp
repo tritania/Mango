@@ -25,7 +25,7 @@
 MangoCommands::MangoCommands()
 {
     std::cout << "Commands are being loaded!" << std::endl;
-    std::ifstream file("config");
+    std::ifstream file("config.conf");
     if (file.is_open())
     {
         std::string str;
@@ -47,7 +47,7 @@ MangoCommands::MangoCommands()
     }
     else
     {
-        file.open("config",std::fstream::out); //need to create the file here
+        std::ofstream out("config.conf");
         std::cout << "Please add commands to the config file" << std::endl;
     }
 }
