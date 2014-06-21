@@ -31,6 +31,7 @@ class MangoListener : public Listener {
     virtual void onFrame(const Controller&);
 
   private:
+    MangoCommands commands;
     bool onGesture = false;
     int preGestureCounter = 0;
     int frameCount = 0;
@@ -63,11 +64,9 @@ void MangoListener::onExit(const Controller& controller) {
 void MangoListener::onFrame(const Controller& controller) {
   const Frame frame = controller.frame();
     HandList hands = frame.hands();
+    int extendedFingers = 0;
     for (HandList::const_iterator hl = hands.begin(); hl != hands.end(); ++hl) {
         const Hand hand = *hl;
-
-
-        int extendedFingers = 0;
         for (int i = 0; i < hand.fingers().count(); i++)
         {
             Finger finger = hand.fingers()[i];
@@ -91,12 +90,34 @@ void MangoListener::onFrame(const Controller& controller) {
             preGestureCounter--;
         }
     }
-
         if (onGesture && frameCount < MAX_FRAMECOUNT) {
+
+            switch (extendedFingers)
+            {
+                case 1:
+                {
+                    std::string command = commands.getCommand("FING3");
+                    std::cout << command << std::endl;
+                    break;
+                }
+                case 2:
+                {
+                    break;
+                }
+                case 3:
+                {
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+
             frameCount++;
             const GestureList gestures = frame.gestures();
             for (int g = 0; g < gestures.count(); ++g) {
-                Gesture gesture = gestures[g];
+                Gesture gesture = gestures[g]; //need to move finger detection in here too
                 switch (gesture.type()) {
                     case Gesture::TYPE_CIRCLE:
                     {
@@ -124,7 +145,7 @@ void MangoListener::onFrame(const Controller& controller) {
                     case Gesture::TYPE_KEY_TAP:
                     {
                         KeyTapGesture tap = gesture;
-                        std::cout << "KEY TAPE" << std::endl;
+                        std::cout << "KEY TAP" << std::endl;
                         break;
                     }
                     case Gesture::TYPE_SCREEN_TAP:
@@ -160,7 +181,6 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
 
   MangoListener listener;
-  MangoCommands commands;
 
   Controller controller;
   controller.addListener(listener);

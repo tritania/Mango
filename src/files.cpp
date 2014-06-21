@@ -25,7 +25,7 @@
 MangoCommands::MangoCommands()
 {
     std::cout << "Commands are being loaded!" << std::endl;
-        std::ifstream file("~/.Mango/config");
+    std::ifstream file("config");
     if (file.is_open())
     {
         std::string str;
@@ -36,15 +36,18 @@ MangoCommands::MangoCommands()
         {
             if (!typeCommand) {
                 gesture = str;
+                typeCommand = true;
             } else {
                 command = str;
                 commands[gesture] = command;
+                std::cout << gesture << " " << command << std::endl;
+                typeCommand = false;
             }
         }
     }
     else
     {
-        file.open("~/.Mango/config",std::fstream::out);
+        file.open("config",std::fstream::out); //need to create the file here
         std::cout << "Please add commands to the config file" << std::endl;
     }
 }
