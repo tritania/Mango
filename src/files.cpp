@@ -24,13 +24,19 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include <boost/filesystem.hpp>
 
 MangoCommands::MangoCommands()
 {
     struct passwd *pw = getpwuid(getuid());
     const char *homedir = pw->pw_dir;
     std::string home(homedir);
-    std::string dir = home + std::string("/.config/mango.conf");
+    std::string dir = home + std::string("/.config/mango/mango.conf");
+    std::string confdir = home + std::string("/.config");
+    std::string conf = home + std::string("/.config/mango");
+
+    boost::filesystem::create_directories(confdir.c_str());
+    boost::filesystem::create_directories(conf.c_str());
 
     std::cout << "Commands are being loaded! " << dir <<std::endl;
     std::ifstream file(dir.c_str());
