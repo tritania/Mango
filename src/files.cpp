@@ -21,11 +21,19 @@
 #include <string>
 #include <stdlib.h>
 #include <map>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 MangoCommands::MangoCommands()
 {
-    std::cout << "Commands are being loaded!" << std::endl;
-    std::ifstream file("config.conf");
+    struct passwd *pw = getpwuid(getuid());
+    const char *homedir = pw->pw_dir;
+    std::string home(homedir);
+    std::string dir = home + std::string("/.config/mango.conf");
+
+    std::cout << "Commands are being loaded! " << dir <<std::endl;
+    std::ifstream file(dir.c_str());
     if (file.is_open())
     {
         std::string str;
@@ -47,7 +55,7 @@ MangoCommands::MangoCommands()
     }
     else
     {
-        std::ofstream out("config.conf");
+        std::ofstream out(dir.c_str());
         std::cout << "Please add commands to the config file" << std::endl;
     }
 }
